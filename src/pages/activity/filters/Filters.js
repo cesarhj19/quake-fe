@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { firstLoad, quakeFetch, updateSearchParams } from "../../../redux/actions";
-import QuickFilters from './quickFilters'
+// import QuickFilters from './quickFilters'
 import RadiusFilter from './radiusFilter'
 import DateFilter from "./dateFilter";
 import MagFilter from "./magFilter";
@@ -31,7 +31,29 @@ function Filters({
  
  // The query parameters to be sent to USGS. Updates with state changes
  const USGSQuery = `&starttime=${starttime}&endtime=${endtime}&minmagnitude=${minmagnitude}&maxmagnitude=${maxmagnitude}&maxradiuskm=${maxradiuskm}&latitude=${latitude}&longitude=${longitude}`;
- const firstLoadQuery = "https://quakelabs-be-production.herokuapp.com/api/activity/first-load";
+
+//Dates
+ var today = new Date();
+ const ymd = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
+
+ var days = 7; // Days you want to subtract
+ var date = new Date();
+ var last = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
+ var day =last.getDate();
+ var month=last.getMonth()+1;
+ var year=last.getFullYear();
+ const sevenDays = `${year}-${month}-${day}`;
+
+ const startTime = sevenDays;
+ const endTime = ymd;
+ const minMagnitude = 0
+ const maxMagnitude = 11
+ const maxRadiuskm = 7000 //global
+ const Latitude = 37.78197
+ const Longitude = -121.93992
+//  const firstLoadQuery = "https://quakelabs-be-production.herokuapp.com/api/activity/first-load";
+//  const firstLoadQuery = "http://www.localhost:5000/api/activity/first-load";
+ const firstLoadQuery = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&limit=30&starttime=${startTime}&endtime=${endTime}&minmagnitude=${minMagnitude}&maxmagnitude=${maxMagnitude}&maxradiuskm=${maxRadiuskm}&latitude=${Latitude}&longitude=${Longitude}&orderby=magnitude`;
  
  // Initial Quake Search, runs on first load
  useEffect(() => {
@@ -46,12 +68,12 @@ function Filters({
   };
 
   // quick filters
-  const quickFilters = (e) => {
-    e.preventDefault();
-    console.log('request coming?', e.target.name)
-    firstLoad(e.target.name, USGSQuery, quakeFetch);
-    toggleSearch();
-  }
+  // const quickFilters = (e) => {
+  //   e.preventDefault();
+  //   console.log('request coming?', e.target.name)
+  //   firstLoad(e.target.name, USGSQuery, quakeFetch);
+  //   toggleSearch();
+  // }
 
   // Updates the search state dynamically for each input due to shared key names
   const handleChanges = (e) => {
@@ -74,7 +96,7 @@ function Filters({
   return (
     <dialog id="search-menu" onClick={onClickRef} className="search-menu">
       <form ref={searchRef} onSubmit={formSubmitCallback} name="filters-form">
-        <QuickFilters quickFilters={quickFilters}/>
+        {/* <QuickFilters quickFilters={quickFilters}/> */}
         <fieldset id="advanced-filters" className="advanced-filters">
           <legend id='advanced-filters-label'>Advanced Filters</legend>
           <RadiusFilter handleChanges={handleChanges} maxradiuskm={maxradiuskm}/>
