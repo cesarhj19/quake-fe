@@ -45,6 +45,7 @@ const Card = (newsArticle) => {
         <a
           href={newsArticle.newsArticle.web_url}
           target="_blank"
+          rel="noopener noreferrer"
           className={
             !newsOpen ? "news-article-button" : "news-article-button-open"
           }
